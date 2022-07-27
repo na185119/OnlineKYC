@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" rel="noopener" href="AccountOpening.css">
+    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+</head>
+<body>
+<div class="content">
+    <h1>Open Account Form</h1>
+
+    <div class="aParent">
+        <div>
+            <form>
+                <label><B>Name :</B></label><br><br>
+                <label><B>DOB :</B></label><br><br>
+                <label><B>Gender :</B></label><br><br>
+                <label for="idProof"><B>Choose govt. ID : </B></label><br><br>
+                <label><B>Enter the ID No. :</B></label><br><br>
+            </form>
+        </div>
+        <div style = "position:relative; left:80px; top:-6px;">
+            <form>
+                <input id="user-name"> <br><br>
+                <input type="date" id="birthday" name="birthday"><br><br>
+                <input type="radio" name="gender" id="male">
+                <label for="male">Male</label>
+                <input type="radio" name="gender" id="female">
+                <label for="female">Female</label>
+                <input type="radio" name="gender" id="other">
+                <label for="other">Other</label><br><br>
+                <select name="idProof" id="idProof">
+                    <option value="Aadhaar">Aadhaar</option>
+                    <option value="PAN card">PAN card</option>
+                    <option value="Driving License">Driving License</option>
+                </select>
+                <br><br>
+                <input id="id_number" name="id_number"><br><br>
+            </form>
+        </div>
+        <div style = "position:relative; left:250px; top:-20px;">
+            <video id="webcam" autoplay playsinline width="250" height="250" style="border-style: solid"></video>
+            <canvas id="canvas" class="d-none"></canvas>
+            <script>
+                const webcamElement = document.getElementById('webcam');
+                const canvasElement = document.getElementById('canvas');
+                const webcam = new Webcam(webcamElement, 'user', canvasElement);
+
+                function onClick()
+                {
+                    canvasElement.style.display = "none"
+                    webcam.start()
+                        .then(result =>{
+                            console.log("webcam started");
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
+
+                function takeSnap()
+                {
+                    let picture = webcam.snap();
+                    canvasElement.setAttribute( "style", "border-style:solid")
+                    webcam.stop()
+                    document.querySelector('#download-photo').href = picture;
+                }
+
+                function verify()
+                {
+                    var ctx = canvasElement.getContext("2d");
+                    // var loadingGIF = GIF();
+                    // loadingGIF.load( "Loading_icon.gif" );
+                    // ctx.drawImage(loadingGIF);
+                    const img = new Image();
+                    img.addEventListener('load', function() {
+                        // execute drawImage statements here
+                        ctx.drawImage( img, 0, 0 );
+                    }, false);
+                    img.src = 'verify.jpg';
+                }
+
+                function stopWebcam()
+                {
+                    canvasElement.style.display = "none"
+                    webcam.stop();
+                }
+            </script>
+            <div style="position: absolute">
+                <button id="capture" type="button" onclick="takeSnap()" >Capture</button>
+                <button id="reset" type="button" onclick="onClick()">Reset</button>
+                <button id="ok" type="button" onclick="verify()">OK</button>
+            </div>
+        </div>
+    </div>
+    <div style = clear:both>
+        <label for="fileselect"><B>Choose Document for KYC :</B></label>
+        <input type="file" name="upload" id="fileselect">
+    </div>
+    <br>
+    <div>
+        <label for="StartWebcam"><B>For Video KYC : </B></label>
+        <button id="StartWebcam" type="button" onclick="onClick()" style="border-radius:6px;">Start webcam!</button>
+        <button id="StopWebcam" type="button" onclick="stopWebcam()" style="border-radius:6px;">Stop webcam!</button>
+    </div>
+</div>
+</body>
+</html>
